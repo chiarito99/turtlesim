@@ -34,30 +34,30 @@ public:
     }
 };
 
-double setDistance(turtlesim::Pose current_pose, double goal_x, double goal_y)
+double Distance(turtlesim::Pose current_pose, double goal_x, double goal_y)
 {
     double dis = sqrt(pow(goal_x - current_pose.x, 2) + pow(goal_y - current_pose.y, 2));
     if(dis < 0.01) dis = 0.0;
     return dis;
 }
 
-double setAngular(turtlesim::Pose current_pose, double goal_x, double goal_y)
+double Angular(turtlesim::Pose current_pose, double goal_x, double goal_y)
 {
     double ang;
-    if(setDistance(current_pose, goal_x, goal_y) < 0.01) ang = 0.0;
+    if(Distance(current_pose, goal_x, goal_y) < 0.1) ang = 0.0;
     else
     {
         ang = asin((cos(current_pose.theta) * (goal_y - current_pose.y) - sin(current_pose.theta) * (goal_x - current_pose.x))
-                    / setDistance(current_pose, goal_x, goal_y));
+                    / Distance(current_pose, goal_x, goal_y));
     }
     return ang;
 }
 
-double setGoc(turtlesim::Pose current_pose, double goal_x, double goal_y)
+double Goc(turtlesim::Pose current_pose, double goal_x, double goal_y)
 {
     double goc;
     goc = acos((cos(current_pose.theta)*(goal_x - current_pose.x)+sin(current_pose.theta)*(goal_y - current_pose.y))
-                    / setDistance(current_pose, goal_x, goal_y));
+                    / Distance(current_pose, goal_x, goal_y));
     if(goc<PI / 2)
     {
         return 1;
@@ -73,6 +73,7 @@ int main(int argc, char** argv)
 {
     ros::init(argc, argv, "myturtle_control");
     ros::NodeHandle h;
+    ros::Time start=ros::Time::now();
     
 
     int n_turtle = atoi(argv[1]);
@@ -80,7 +81,7 @@ int main(int argc, char** argv)
     Rua rua[n_turtle];
 
 
-
+    //tao rùa ngâu nhiên
     for(int i = 1; i < n_turtle; i++)
     {
         ros::service::waitForService("spawn");
@@ -123,13 +124,13 @@ int main(int argc, char** argv)
                 ros::spinOnce();
                 //cout << current_pose.x << " " << current_pose.y << " " << current_pose.theta << endl;
 
-                if (setDistance(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1]) < tolerance) {
+                if (Distance(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1]) < tolerance) {
                     if(id < argc)
 	                {
                         arr_goal[idx][0] = atof(argv[id++]);
                         arr_goal[idx][1] = atof(argv[id++]);
                         // cout << "turtle1: " << arr_goal[0][0] << " " << arr_goal[0][1] << endl;
-                        a[idx]=setGoc(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1]);
+                        a[idx]=Goc(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1]);
 
                     }
                    
@@ -139,13 +140,14 @@ int main(int argc, char** argv)
                 // a[idx]=setGoc(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1]);
 
                 geometry_msgs::Twist msg = getMessage(
-                    a[idx]*2.2*setDistance(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1]),
-                    a[idx]*12.5*setAngular(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1])
+                    a[idx]*4*Distance(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1]),
+                    a[idx]*12.5*Angular(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1])
                 );
 
                 rua[idx].pub.publish(msg);
             }
         }
-    
+    ros::Time finish = ros::Time::now();
+    cout<<"total time:" << (finish-start).toSec();
     return 0;
 }

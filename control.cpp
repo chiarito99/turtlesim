@@ -28,6 +28,7 @@ int main(int argc, char** argv)
 {
     ros::init(argc, argv, "myturtle_control");
     ros::NodeHandle h;
+    ros::Time start=ros::Time::now();
     pub = h.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1000);
     ros::Subscriber sub =
         h.subscribe("/turtle1/pose", 1000, poseCallback);
@@ -52,7 +53,7 @@ int main(int argc, char** argv)
                 pub.publish(getMessage(0,0));
                 break;
             }
-            double alpha = atan2( y0-current_pose.y, x0-current_pose.x ),a_z;
+            // double alpha = atan2( y0-current_pose.y, x0-current_pose.x ),a_z;
             
             double dx = x0 - current_pose.x, dy = y0 - current_pose.y, theta = current_pose.theta;
            
@@ -62,7 +63,7 @@ int main(int argc, char** argv)
             if((goc<PI/2) && (goc>-PI/2))
             {
                 geometry_msgs::Twist msg = getMessage(
-                    2.2*distance,
+                    4*distance,
                     12.5*dalpha
             );
 
@@ -71,7 +72,7 @@ int main(int argc, char** argv)
             else
             {
                 geometry_msgs::Twist msg = getMessage(
-                    -2.2*distance,
+                    -4*distance,
                     -12.5*dalpha
             );
 
@@ -79,6 +80,8 @@ int main(int argc, char** argv)
             }
         }
     }
+    ros::Time finish = ros::Time::now();
+    cout<<"total time:" << (finish-start).toSec();
     return 0;
 }
 
