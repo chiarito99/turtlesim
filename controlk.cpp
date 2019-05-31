@@ -118,7 +118,7 @@ int main(int argc, char** argv)
     double a[n_turtle];
 
         while (ros::ok()) {
-            int count=0
+            int number=0;
             for (int idx = 0; idx < n_turtle; idx++)
             {
                 loopRate.sleep();
@@ -134,10 +134,9 @@ int main(int argc, char** argv)
                         a[idx]=Goc(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1]);
 
                     }
-                    
+                    else number++;
                    
                 }
-                else count++;
                 
                
                 // a[idx]=setGoc(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1]);
@@ -149,7 +148,7 @@ int main(int argc, char** argv)
 
                 rua[idx].pub.publish(msg);
             }
-            if(count=n_turtle) break;
+            if(number==n_turtle) break;
         }
     ros::Time finish = ros::Time::now();
     cout<<"total time:" << (finish-start).toSec();
