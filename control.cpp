@@ -63,7 +63,7 @@ int main(int argc, char** argv)
             if((goc<PI/2) && (goc>-PI/2))
             {
                 geometry_msgs::Twist msg = getMessage(
-                    7*distance,
+                    4.5*distance,
                     14*dalpha
             );
 
@@ -72,7 +72,7 @@ int main(int argc, char** argv)
             else
             {
                 geometry_msgs::Twist msg = getMessage(
-                    -7*distance,
+                    -4.5*distance,
                     -14*dalpha
             );
 

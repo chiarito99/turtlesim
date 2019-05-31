@@ -142,7 +142,7 @@ int main(int argc, char** argv)
                 // a[idx]=setGoc(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1]);
 
                 geometry_msgs::Twist msg = getMessage(
-                    a[idx]*7*Distance(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1]),
+                    a[idx]*4.5*Distance(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1]),
                     a[idx]*14*Angular(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1])
                 );
 
