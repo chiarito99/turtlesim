@@ -118,6 +118,7 @@ int main(int argc, char** argv)
     double a[n_turtle];
 
         while (ros::ok()) {
+            int count=0
             for (int idx = 0; idx < n_turtle; idx++)
             {
                 loopRate.sleep();
@@ -133,19 +134,22 @@ int main(int argc, char** argv)
                         a[idx]=Goc(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1]);
 
                     }
+                    
                    
                 }
+                else count++;
                 
                
                 // a[idx]=setGoc(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1]);
 
                 geometry_msgs::Twist msg = getMessage(
-                    a[idx]*4*Distance(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1]),
-                    a[idx]*12.5*Angular(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1])
+                    a[idx]*7*Distance(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1]),
+                    a[idx]*14*Angular(rua[idx].current_pose,arr_goal[idx][0],arr_goal[idx][1])
                 );
 
                 rua[idx].pub.publish(msg);
             }
+            if(count=n_turtle) break;
         }
     ros::Time finish = ros::Time::now();
     cout<<"total time:" << (finish-start).toSec();
